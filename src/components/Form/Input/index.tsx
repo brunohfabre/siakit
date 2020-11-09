@@ -6,7 +6,9 @@ import React, {
   useCallback,
 } from 'react';
 import { useField } from '@unform/core';
-import { FiX } from 'react-icons/fi';
+import { FiX, FiAlertCircle } from 'react-icons/fi';
+
+import Tooltip from '../../Tooltip';
 
 import { Container, InputContainer, Remove } from './styles';
 
@@ -60,7 +62,11 @@ const Input: React.FC<Props> = ({ name, label, ...rest }) => {
           </Remove>
         )}
 
-        {/* {error && <span>{error}</span>} */}
+        {error && (
+          <Tooltip content={error}>
+            <FiAlertCircle color="#dc3545" size={16} />
+          </Tooltip>
+        )}
       </InputContainer>
     </Container>
   );

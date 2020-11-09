@@ -61,11 +61,20 @@ export const InputContainer = styled.div<InputContainerProps>`
       color: rgba(0, 0, 0, 0.16);
     }
   }
+
+  > div {
+    display: flex;
+    margin-left: 8px;
+
+    svg {
+      color: #dc3545;
+    }
+  }
 `;
 
 export const Remove = styled.button`
   border: 0;
-  background: transparent;
+  background: rgba(0, 0, 0, 0.05);
   border-radius: 4px;
   width: 20px;
   height: 20px;

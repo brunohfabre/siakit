@@ -1,5 +1,6 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
+import axios from 'axios';
 
 import './index.css';
 
@@ -20,6 +21,9 @@ import Switch from './components/Form/Switch';
 
 import Dropdown from './components/Dropdown';
 import Tooltip from './components/Tooltip';
+import Spin from './components/Spin';
+
+import { Button } from './styles';
 
 interface Errors {
   [key: string]: string;
@@ -27,6 +31,55 @@ interface Errors {
 
 const App: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+  const scrollObserve = useRef<HTMLDivElement>(null);
+
+  const [scrollRadio, setScrollRadio] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [term, setTerm] = useState('');
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [repositories, setRepositories] = useState<any[]>([]);
+
+  const intersectionObserver = new IntersectionObserver((entries) => {
+    const radio = entries[0].intersectionRatio;
+
+    setScrollRadio(radio);
+  });
+
+  useEffect(() => {
+    if (scrollObserve.current) {
+      intersectionObserver.observe(scrollObserve.current);
+    }
+
+    return () => {
+      intersectionObserver.disconnect();
+    };
+  }, []);
+
+  const loadRepositories = useCallback(async () => {
+    setLoading(true);
+
+    const response = await axios.get(
+      `https://api.github.com/search/repositories?q=java&per_page=10&page=${page}`,
+      {
+        headers: {
+          Authorization: 'token 5db13b4bc1eb0b7a431a85bf04a600ac33e1d639',
+        },
+      },
+    );
+
+    setRepositories([...repositories, ...response.data.items]);
+    // setLoading(false);
+  }, [page, repositories]);
+
+  console.log(repositories);
+
+  useEffect(() => {
+    if (scrollRadio > 0 && !loading) {
+      loadRepositories();
+    }
+  }, [page, loadRepositories, scrollRadio, loading]);
 
   const handleSubmit = useCallback(async (data) => {
     try {
@@ -236,6 +289,71 @@ const App: React.FC = () => {
           <Tooltip content="Isso ae">
             <button type="submit">submit</button>
           </Tooltip>
+        </section>
+
+        <section>
+          <div ref={scrollObserve} style={{ display: 'block' }} />
+        </section>
+
+        <section>
+          <h3>spin</h3>
+
+          <div style={{ position: 'relative' }}>
+            <Spin>
+              <p>
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                Ratione dicta officiis, temporibus et ipsam voluptatum est
+                tenetur dolorem nostrum perferendis eligendi nulla vel omnis
+                illo assumenda, ad, alias laboriosam. Suscipit.
+              </p>
+              <p>
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                Ratione dicta officiis, temporibus et ipsam voluptatum est
+                tenetur dolorem nostrum perferendis eligendi nulla vel omnis
+                illo assumenda, ad, alias laboriosam. Suscipit.
+              </p>
+            </Spin>
+          </div>
+
+          <Button type="button" onClick={() => setIsLoading(!isLoading)}>
+            {isLoading ? <Spin color="light" /> : 'Concluir'}
+          </Button>
+
+          <div
+            style={{
+              background: 'gray',
+              width: 200,
+              height: 200,
+              display: 'flex',
+            }}
+          >
+            <Spin color="light" />
+          </div>
+        </section>
+
+        <hr style={{ margin: '32px 0' }} />
+
+        <section>
+          <h3>Infinite scroll</h3>
+
+          {repositories.map((repository) => (
+            <div style={{ display: 'flex' }}>
+              <img
+                src={repository.owner.avatar_url}
+                alt=""
+                style={{ width: 100, height: 100 }}
+              />
+
+              <div>
+                <td>
+                  <a href={repository.html_url}>{repository.html_url}</a>
+                </td>
+                <td>{repository.stargazers_count}</td>
+              </div>
+            </div>
+          ))}
+
+          <Spin />
         </section>
       </Form>
     </>
