@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import axios from 'axios';
+import useInfiniteScroll from 'react-infinite-scroll-hook';
 
 import './index.css';
 
@@ -31,31 +32,12 @@ interface Errors {
 
 const App: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
-  const scrollObserve = useRef<HTMLDivElement>(null);
 
-  const [scrollRadio, setScrollRadio] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [term, setTerm] = useState('');
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [repositories, setRepositories] = useState<any[]>([]);
-
-  const intersectionObserver = new IntersectionObserver((entries) => {
-    const radio = entries[0].intersectionRatio;
-
-    setScrollRadio(radio);
-  });
-
-  useEffect(() => {
-    if (scrollObserve.current) {
-      intersectionObserver.observe(scrollObserve.current);
-    }
-
-    return () => {
-      intersectionObserver.disconnect();
-    };
-  }, []);
 
   const loadRepositories = useCallback(async () => {
     setLoading(true);
@@ -64,22 +46,25 @@ const App: React.FC = () => {
       `https://api.github.com/search/repositories?q=java&per_page=10&page=${page}`,
       {
         headers: {
-          Authorization: 'token 5db13b4bc1eb0b7a431a85bf04a600ac33e1d639',
+          Authorization: 'token b3612cb0e75033040c96ae89d6ff284853577a76',
         },
       },
     );
 
     setRepositories([...repositories, ...response.data.items]);
-    // setLoading(false);
-  }, [page, repositories]);
 
-  console.log(repositories);
+    setLoading(false);
+  }, [repositories, page]);
 
   useEffect(() => {
-    if (scrollRadio > 0 && !loading) {
-      loadRepositories();
-    }
-  }, [page, loadRepositories, scrollRadio, loading]);
+    loadRepositories();
+  }, [page]);
+
+  const infiniteRef = useInfiniteScroll({
+    loading,
+    hasNextPage: true,
+    onLoadMore: () => setPage(page + 1),
+  });
 
   const handleSubmit = useCallback(async (data) => {
     try {
@@ -88,6 +73,7 @@ const App: React.FC = () => {
       const schema = Yup.object().shape({
         name: Yup.string().required('Campo obrigatorio'),
         age: Yup.string().required('Campo obrigatorio'),
+        phone: Yup.string().required('Campo obrigatorio'),
       });
 
       await schema.validate(data, {
@@ -124,15 +110,7 @@ const App: React.FC = () => {
         <section>
           <h3>input mask</h3>
 
-          <InputMask name="phone" mask="phone" />
-          <button
-            type="button"
-            onClick={() => {
-              formRef.current?.setFieldValue('phone', '18997812225');
-            }}
-          >
-            set input mask value
-          </button>
+          <InputMask name="phone" placeholder="Input mask" mask="phone" />
         </section>
 
         <section>
@@ -292,10 +270,6 @@ const App: React.FC = () => {
         </section>
 
         <section>
-          <div ref={scrollObserve} style={{ display: 'block' }} />
-        </section>
-
-        <section>
           <h3>spin</h3>
 
           <div style={{ position: 'relative' }}>
@@ -333,7 +307,7 @@ const App: React.FC = () => {
 
         <hr style={{ margin: '32px 0' }} />
 
-        <section>
+        <section ref={infiniteRef}>
           <h3>Infinite scroll</h3>
 
           {repositories.map((repository) => (
@@ -353,7 +327,7 @@ const App: React.FC = () => {
             </div>
           ))}
 
-          <Spin />
+          {loading && <Spin />}
         </section>
       </Form>
     </>
