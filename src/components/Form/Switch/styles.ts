@@ -14,7 +14,7 @@ export const Content = styled.label`
   }
 
   input:checked + span {
-    background-color: #2196f3;
+    background-color: #237bc3;
   }
 
   input:checked + span::before {

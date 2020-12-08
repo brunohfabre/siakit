@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, InputHTMLAttributes } from 'react';
 import { useField } from '@unform/core';
 
+import { Container } from './styles';
+
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   options: {
@@ -37,7 +39,7 @@ const Radio: React.FC<Props> = ({ name, options, ...rest }) => {
   }, [defaultValue, fieldName, registerField]);
 
   return (
-    <div>
+    <Container>
       {options.map((option, index) => (
         <label htmlFor={option.id} key={option.id}>
           <input
@@ -55,7 +57,7 @@ const Radio: React.FC<Props> = ({ name, options, ...rest }) => {
           {option.label}
         </label>
       ))}
-    </div>
+    </Container>
   );
 };
 

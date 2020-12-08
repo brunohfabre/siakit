@@ -1,19 +1,5 @@
 import styled, { css } from 'styled-components';
 
-export const List = styled.div`
-  min-width: 200px;
-  max-height: 300px;
-  overflow-y: auto;
-  background: blue;
-  display: flex;
-  flex-direction: column;
-`;
-
-export const TextSelected = styled.div`
-  position: absolute;
-  left: 12px;
-`;
-
 interface ContainerProps {
   isErrored: boolean;
 }
@@ -26,6 +12,7 @@ interface InputContainerProps {
 export const Container = styled.div<ContainerProps>`
   display: flex;
   flex-direction: column;
+  width: 146px;
 
   label {
     margin-bottom: 4px;
@@ -40,7 +27,6 @@ export const Container = styled.div<ContainerProps>`
 `;
 
 export const InputContainer = styled.div<InputContainerProps>`
-  position: relative;
   background: #fff;
   height: 32px;
   padding: 0 8px;
@@ -65,19 +51,18 @@ export const InputContainer = styled.div<InputContainerProps>`
       background: #fff;
     `}
 
-  input {
+    > div:nth-child(1) {
+    cursor: text;
     flex: 1;
-    border: 0;
-    color: #24292e;
-    background: transparent;
-    margin-left: 4px;
+    margin: 0 !important;
+    background: transparent !important;
 
-    &::placeholder {
-      color: rgba(0, 0, 0, 0.16);
+    .react-date-picker__wrapper {
+      border: 0;
     }
   }
 
-  > div:last-child {
+  > div {
     display: flex;
     margin-left: 8px;
 
@@ -93,7 +78,6 @@ export const Remove = styled.button`
   border-radius: 4px;
   width: 20px;
   height: 20px;
-  margin-left: 8px;
 
   display: flex;
   align-items: center;

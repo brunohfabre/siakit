@@ -46,7 +46,7 @@ const App: React.FC = () => {
       `https://api.github.com/search/repositories?q=java&per_page=10&page=${page}`,
       {
         headers: {
-          Authorization: 'token b3612cb0e75033040c96ae89d6ff284853577a76',
+          Authorization: 'token f2602f20aa7a8a4d096ab491c134c9936dbc3344',
         },
       },
     );
@@ -74,6 +74,9 @@ const App: React.FC = () => {
         name: Yup.string().required('Campo obrigatorio'),
         age: Yup.string().required('Campo obrigatorio'),
         phone: Yup.string().required('Campo obrigatorio'),
+        appointment2: Yup.string().required('required'),
+        daterange: Yup.string().required('required'),
+        myselect: Yup.string().required('required'),
       });
 
       await schema.validate(data, {
@@ -110,7 +113,12 @@ const App: React.FC = () => {
         <section>
           <h3>input mask</h3>
 
-          <InputMask name="phone" placeholder="Input mask" mask="phone" />
+          <InputMask
+            name="phone"
+            placeholder="Input mask"
+            mask="phone"
+            label="Telefone"
+          />
         </section>
 
         <section>
@@ -160,9 +168,9 @@ const App: React.FC = () => {
         <section>
           <h3>date and range picker</h3>
 
-          <DatePicker name="appointment2" />
+          <DatePicker name="appointment2" label="Dia" />
 
-          <DateRangePicker name="daterange" />
+          <DateRangePicker name="daterange" label="Periodo" />
 
           <button
             type="button"
@@ -179,6 +187,7 @@ const App: React.FC = () => {
 
           <Select
             name="myselect"
+            label="Contatos"
             options={[
               { id: '1', label: 'Bruno Fabre' },
               { id: '2', label: 'name 2' },
@@ -206,7 +215,7 @@ const App: React.FC = () => {
         <section>
           <h3>colors</h3>
 
-          <Colors name="cor" />
+          <Colors name="cor" label="Escolha uma cor" />
 
           <button
             type="button"

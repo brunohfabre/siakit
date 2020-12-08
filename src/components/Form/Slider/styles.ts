@@ -3,16 +3,20 @@ import ReactSlider from 'react-slider';
 
 export const StyledSlider = styled(ReactSlider)`
   width: 100%;
-  height: 25px;
+  height: 4px;
 `;
 
 export const StyledThumb = styled.div`
-  height: 25px;
-  line-height: 25px;
-  width: 25px;
+  height: 20px;
+  line-height: 20px;
+  width: 20px;
+  top: -8px;
   text-align: center;
-  background-color: #000;
-  color: #fff;
+  background-color: #fff;
+  color: #666;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1);
   border-radius: 50%;
   cursor: grab;
 `;
