@@ -1,4 +1,26 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+interface ContainerProps {
+  isErrored: boolean;
+}
+
+export const Container = styled.div<ContainerProps>`
+  display: flex;
+  align-items: center;
+
+  label {
+    ${(props) =>
+      props.isErrored &&
+      css`
+        color: #dc3545;
+      `}
+  }
+
+  > div {
+    height: 16px;
+    margin-left: 8px;
+  }
+`;
 
 export const Content = styled.label`
   position: relative;

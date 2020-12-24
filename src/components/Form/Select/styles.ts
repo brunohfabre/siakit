@@ -1,12 +1,21 @@
 import styled, { css } from 'styled-components';
 
-export const List = styled.div`
+import Card from '../../Card';
+
+export const List = styled(Card)`
   min-width: 200px;
-  max-height: 300px;
+  max-height: 140px;
   overflow-y: auto;
-  background: blue;
   display: flex;
   flex-direction: column;
+  padding: 8px 0;
+
+  div {
+    &:hover {
+      cursor: pointer;
+      background: blue !important;
+    }
+  }
 `;
 
 export const TextSelected = styled.div`

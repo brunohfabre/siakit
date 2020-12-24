@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
-export const Card = styled.div`
+import Card from '../Card';
+
+export const Content = styled(Card)`
   max-width: 320px;
-  background: tomato;
   border-radius: 4px;
 
   p {

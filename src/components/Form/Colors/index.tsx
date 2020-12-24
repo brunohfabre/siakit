@@ -1,8 +1,11 @@
 import React, { useEffect, InputHTMLAttributes, useState } from 'react';
 import { useField } from '@unform/core';
 import { CirclePicker } from 'react-color';
+import { FiAlertCircle } from 'react-icons/fi';
 
-import { Container } from './styles';
+import Tooltip from '../../Tooltip';
+
+import { Container, PickerContainer } from './styles';
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
@@ -24,12 +27,18 @@ const Input: React.FC<Props> = ({ name, label }) => {
   }, [fieldName, registerField, color]);
 
   return (
-    <Container>
+    <Container isErrored={!!error}>
       {label && <label htmlFor={fieldName}>{label}</label>}
 
-      <CirclePicker onChange={(value) => setColor(value.hex)} color={color} />
+      <PickerContainer>
+        <CirclePicker onChange={(value) => setColor(value.hex)} color={color} />
 
-      {error && <span>{error}</span>}
+        {error && (
+          <Tooltip content={error}>
+            <FiAlertCircle color="#dc3545" size={16} />
+          </Tooltip>
+        )}
+      </PickerContainer>
     </Container>
   );
 };

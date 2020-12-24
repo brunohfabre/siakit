@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { HTMLAttributes, forwardRef } from 'react';
 
 import { Container } from './styles';
 
-const Card: React.FC = ({ children }) => {
-  return <Container>{children}</Container>;
+type CardProps = HTMLAttributes<HTMLDivElement>;
+
+const Card: React.ForwardRefRenderFunction<HTMLDivElement, CardProps> = (
+  { className, children, ...rest },
+  ref,
+) => {
+  return (
+    <Container ref={ref} className={className} {...rest}>
+      {children}
+    </Container>
+  );
 };
 
-export default Card;
+export default forwardRef(Card);

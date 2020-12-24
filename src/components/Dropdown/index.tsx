@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import Tippy from '@tippyjs/react/headless';
 
-import { Card } from './styles';
+import { Content } from './styles';
 
 interface Option {
   id: string;
@@ -56,7 +56,7 @@ const Dropdown: React.FC<Props> = ({
       visible={isClickable ? isVisible : undefined}
       onClickOutside={() => (isClickable ? setIsVisible(false) : undefined)}
       render={() => (
-        <Card>
+        <Content>
           {options.map((option) => (
             <button
               key={option.id}
@@ -66,7 +66,7 @@ const Dropdown: React.FC<Props> = ({
               {option.label}
             </button>
           ))}
-        </Card>
+        </Content>
       )}
     >
       <span

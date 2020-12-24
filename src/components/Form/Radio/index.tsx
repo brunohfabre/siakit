@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, InputHTMLAttributes } from 'react';
 import { useField } from '@unform/core';
+import { FiAlertCircle } from 'react-icons/fi';
+
+import Tooltip from '../../Tooltip';
 
 import { Container } from './styles';
 
@@ -14,7 +17,7 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
 
 const Radio: React.FC<Props> = ({ name, options, ...rest }) => {
   const inputRefs = useRef<HTMLInputElement[]>([]);
-  const { fieldName, registerField, defaultValue = [] } = useField(name);
+  const { fieldName, registerField, defaultValue = [], error } = useField(name);
 
   useEffect(() => {
     registerField({
@@ -39,7 +42,7 @@ const Radio: React.FC<Props> = ({ name, options, ...rest }) => {
   }, [defaultValue, fieldName, registerField]);
 
   return (
-    <Container>
+    <Container isErrored={!!error}>
       {options.map((option, index) => (
         <label htmlFor={option.id} key={option.id}>
           <input
@@ -57,6 +60,12 @@ const Radio: React.FC<Props> = ({ name, options, ...rest }) => {
           {option.label}
         </label>
       ))}
+
+      {error && (
+        <Tooltip content={error}>
+          <FiAlertCircle color="#dc3545" size={16} />
+        </Tooltip>
+      )}
     </Container>
   );
 };

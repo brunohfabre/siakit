@@ -1,11 +1,23 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const Container = styled.div`
+interface ContainerProps {
+  isErrored: boolean;
+}
+
+export const Container = styled.div<ContainerProps>`
+  flex: 1;
   display: flex;
+  align-items: center;
 
   label {
     display: flex;
     align-items: center;
+
+    ${(props) =>
+      props.isErrored &&
+      css`
+        color: #dc3545;
+      `}
 
     input {
       margin-right: 4px;
@@ -14,5 +26,10 @@ export const Container = styled.div`
     & + label {
       margin-left: 16px;
     }
+  }
+
+  > div {
+    height: 16px;
+    margin-left: 8px;
   }
 `;

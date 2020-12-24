@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  background: tomato;
   border-radius: 4px;
-  padding: 16px;
+  background: #fff;
+  box-shadow: rgba(0, 0, 0, 0.15) 0 1px 2px, rgba(0, 0, 0, 0.1) 0 0 2px;
 `;

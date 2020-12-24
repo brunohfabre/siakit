@@ -1,10 +1,18 @@
-import React, { useRef, useEffect, useCallback, useState } from 'react';
+import React, {
+  useRef,
+  useEffect,
+  useCallback,
+  useState,
+  InputHTMLAttributes,
+  SyntheticEvent,
+} from 'react';
 import Tippy from '@tippyjs/react/headless';
 import debounce from 'lodash.debounce';
 import { useField } from '@unform/core';
 import { FiX, FiAlertCircle } from 'react-icons/fi';
 
 import Tooltip from '../../Tooltip';
+import Spin from '../../Spin';
 
 import {
   List,
@@ -19,12 +27,13 @@ interface Option {
   label: string;
 }
 
-interface Props {
+interface Props extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   label?: string;
   options: Option[];
-  onChange(option: Option): void;
   onSearch?(value: string): void;
+  loading: boolean;
+  next?(): void;
 }
 
 const Select: React.FC<Props> = ({
@@ -33,35 +42,46 @@ const Select: React.FC<Props> = ({
   options,
   onChange,
   onSearch,
+  loading = false,
+  next,
+  placeholder,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [isFocused, setIsFocused] = useState(false);
-  const [isFilled, setIsFilled] = useState(false);
+  const [isFilled, setIsFilled] = useState('');
 
   const [isVisible, setIsVisible] = useState(false);
   const [selected, setSelected] = useState<Option | null>();
   const [value, setValue] = useState('');
   const [data, setData] = useState(options);
+  const [prevDataLength, setPrevDataLength] = useState(0);
 
   const { fieldName, defaultValue, registerField, error } = useField(name);
 
+  useEffect(() => {
+    if (options) {
+      setData(options);
+    }
+  }, [options]);
+
   const handleSelectOption = useCallback(
     (option) => {
-      setIsFilled(true);
+      setIsFilled(option.id);
       setSelected(option);
 
-      onChange(option);
+      if (onChange) {
+        onChange(option);
+      }
 
       setIsVisible(false);
 
       if (inputRef.current) {
         inputRef.current.value = '';
-        setData(options);
         setValue('');
       }
     },
-    [onChange, options],
+    [onChange],
   );
 
   useEffect(() => {
@@ -72,7 +92,7 @@ const Select: React.FC<Props> = ({
         setIsVisible(false);
         setSelected(null);
         setValue('');
-        setIsFilled(false);
+        setIsFilled('');
         if (inputRef.current) {
           inputRef.current.value = '';
         }
@@ -107,7 +127,7 @@ const Select: React.FC<Props> = ({
   const handleInputChange = useCallback(
     (e) => {
       setValue(e.target.value);
-      setIsFilled(true);
+      setIsFilled(e.target.value);
 
       if (onSearch) {
         debounced(e);
@@ -126,11 +146,34 @@ const Select: React.FC<Props> = ({
     setIsVisible(false);
     setSelected(null);
     setValue('');
-    setIsFilled(false);
+    setIsFilled('');
+    setData(options);
     if (inputRef.current) {
       inputRef.current.value = '';
     }
-  }, []);
+  }, [options]);
+
+  function handleScroll(event: SyntheticEvent): void {
+    const { scrollTop, clientHeight, scrollHeight } = event.currentTarget;
+
+    if (loading) {
+      return;
+    }
+
+    if (prevDataLength === options.length) {
+      return;
+    }
+
+    if (scrollHeight - scrollTop === clientHeight) {
+      setPrevDataLength(options.length);
+
+      console.log('load more');
+
+      if (next) {
+        next();
+      }
+    }
+  }
 
   return (
     <Tippy
@@ -139,7 +182,7 @@ const Select: React.FC<Props> = ({
       visible={isVisible}
       onClickOutside={() => setIsVisible(false)}
       render={() => (
-        <List>
+        <List onScroll={handleScroll}>
           {data.map((option) => (
             <div
               key={option.id}
@@ -156,6 +199,8 @@ const Select: React.FC<Props> = ({
               {option.label}
             </div>
           ))}
+
+          {loading && <Spin padding={16} />}
         </List>
       )}
     >
@@ -164,17 +209,27 @@ const Select: React.FC<Props> = ({
 
         <InputContainer isFocused={isFocused} isErrored={!!error}>
           {!value && <TextSelected>{selected?.label}</TextSelected>}
+
           <input
             ref={inputRef}
             onFocus={() => {
               setIsVisible(true);
               setIsFocused(true);
             }}
-            onBlur={() => setIsFocused(false)}
+            onBlur={() => {
+              setIsFocused(false);
+              setIsFilled('');
+              setValue('');
+              setData(options);
+              if (inputRef.current) {
+                inputRef.current.value = '';
+              }
+            }}
             type="text"
             onChange={handleInputChange}
+            placeholder={selected || isFilled ? '' : placeholder}
           />
-          {isFilled && (
+          {(selected || isFilled) && (
             <Remove type="button" onClick={handleClearInput}>
               <FiX size={16} />
             </Remove>

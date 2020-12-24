@@ -1,7 +1,10 @@
 import React, { useEffect, InputHTMLAttributes, useState } from 'react';
 import { useField } from '@unform/core';
+import { FiAlertCircle } from 'react-icons/fi';
 
-import { Content } from './styles';
+import Tooltip from '../../Tooltip';
+
+import { Container, Content } from './styles';
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
@@ -23,7 +26,7 @@ const Switch: React.FC<Props> = ({ name, label, ...rest }) => {
   }, [fieldName, registerField, value]);
 
   return (
-    <>
+    <Container isErrored={!!error}>
       <label
         htmlFor={fieldName}
         style={{
@@ -48,8 +51,12 @@ const Switch: React.FC<Props> = ({ name, label, ...rest }) => {
         {label}
       </label>
 
-      {error && <span>{error}</span>}
-    </>
+      {error && (
+        <Tooltip content={error}>
+          <FiAlertCircle color="#dc3545" size={16} />
+        </Tooltip>
+      )}
+    </Container>
   );
 };
 
