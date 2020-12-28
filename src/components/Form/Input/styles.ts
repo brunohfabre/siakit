@@ -29,9 +29,11 @@ export const InputContainer = styled.div<InputContainerProps>`
   background: #fff;
   height: 32px;
   padding: 0 8px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   transition: border 0.2s;
+  transition: border-color 0.2s;
+  transition: background-color 0.2s;
 
   display: flex;
   align-items: center;

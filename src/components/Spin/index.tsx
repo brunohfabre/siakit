@@ -5,15 +5,23 @@ import { Container, Content } from './styles';
 interface Props {
   color?: 'light' | 'dark';
   padding?: number;
+  spinning?: boolean;
 }
 
-const Spin: React.FC<Props> = ({ color = 'dark', children, padding }) => {
+const Spin: React.FC<Props> = ({
+  color = 'dark',
+  children,
+  padding,
+  spinning = true,
+}) => {
   if (children) {
     return (
       <>
-        <Container isFloating={!!children}>
-          <Content color={color} />
-        </Container>
+        {spinning && (
+          <Container isFloating={!!children}>
+            <Content color={color} />
+          </Container>
+        )}
 
         {children}
       </>

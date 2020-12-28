@@ -27,7 +27,7 @@ const InputMask: React.FC<Props> = ({ name, mask, label, ...rest }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [isFocused, setIsFocused] = useState(false);
-  const [isFilled, setIsFilled] = useState(false);
+  const [isFilled, setIsFilled] = useState('');
 
   const { fieldName, defaultValue, registerField, error } = useField(name);
 
@@ -48,7 +48,7 @@ const InputMask: React.FC<Props> = ({ name, mask, label, ...rest }) => {
       path: 'value',
       ref: inputRef.current,
       setValue: (ref, value) => {
-        setIsFilled(true);
+        setIsFilled(String(value));
         masked(value);
       },
     });
@@ -57,7 +57,7 @@ const InputMask: React.FC<Props> = ({ name, mask, label, ...rest }) => {
   const handleClearInput = useCallback(() => {
     if (inputRef.current) {
       inputRef.current.value = '';
-      setIsFilled(false);
+      setIsFilled('');
     }
   }, []);
 
@@ -74,7 +74,7 @@ const InputMask: React.FC<Props> = ({ name, mask, label, ...rest }) => {
           defaultValue={defaultValue}
           onChange={(e) => {
             masked(e.target.value);
-            setIsFilled(true);
+            setIsFilled(e.target.value);
           }}
           {...rest}
         />

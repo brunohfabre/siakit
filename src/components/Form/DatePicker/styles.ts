@@ -33,6 +33,8 @@ export const InputContainer = styled.div<InputContainerProps>`
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   transition: border 0.2s;
+  transition: border-color 0.2s;
+  transition: background-color 0.2s;
 
   display: flex;
   align-items: center;

@@ -45,7 +45,7 @@ const App: React.FC = () => {
       `https://api.github.com/search/repositories?q=java&per_page=10&page=${page}`,
       {
         headers: {
-          Authorization: 'token 99cfa3ebd23e905484f1029c9d7cabae83d4b7b3',
+          Authorization: 'token 09a67ae8bb98e4f48418f03d984b3e01e8bc045b',
         },
       },
     );
@@ -61,6 +61,8 @@ const App: React.FC = () => {
 
   const handleSubmit = useCallback(async (data) => {
     try {
+      console.log(data);
+
       formRef.current?.setErrors({});
 
       const schema = Yup.object().shape({
@@ -197,11 +199,24 @@ const App: React.FC = () => {
               id: repository.id,
               label: repository.html_url,
             }))}
-            onChange={(value) => console.log(value)}
+            // onChange={(value) => console.log(value)}
             loading={loading}
             next={() => {
               setPage(page + 1);
-              console.log('opa');
+            }}
+          />
+
+          <Select
+            name="myselect2"
+            label="Select teste"
+            placeholder="Select teste"
+            options={[
+              { id: '1', label: 'Bruno Fabre' },
+              { id: '2', label: 'Vinicius Henrique' },
+            ]}
+            loading={loading}
+            next={() => {
+              setPage(page + 1);
             }}
           />
 
@@ -215,6 +230,18 @@ const App: React.FC = () => {
             }}
           >
             set select data
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              formRef.current?.setFieldValue('myselect2', {
+                id: 'vrau',
+                label: 'Teste',
+              });
+            }}
+          >
+            set select data 2
           </button>
         </section>
 
