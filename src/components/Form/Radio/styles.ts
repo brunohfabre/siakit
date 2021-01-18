@@ -5,31 +5,41 @@ interface ContainerProps {
 }
 
 export const Container = styled.div<ContainerProps>`
-  flex: 1;
   display: flex;
-  align-items: center;
+  flex-direction: column;
 
-  label {
-    display: flex;
-    align-items: center;
+  > label {
+    margin-bottom: 4px;
+    color: #24292e;
 
     ${(props) =>
       props.isErrored &&
       css`
         color: #dc3545;
       `}
-
-    input {
-      margin-right: 4px;
-    }
-
-    & + label {
-      margin-left: 16px;
-    }
   }
 
   > div {
-    height: 16px;
-    margin-left: 8px;
+    display: flex;
+    align-items: center;
+
+    label {
+      display: flex;
+      align-items: center;
+
+      ${(props) =>
+        props.isErrored &&
+        css`
+          color: #dc3545;
+        `}
+
+      input {
+        margin-right: 4px;
+      }
+
+      & + label {
+        margin-left: 16px;
+      }
+    }
   }
 `;

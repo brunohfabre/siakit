@@ -15,11 +15,6 @@ export const Container = styled.div<ContainerProps>`
         color: #dc3545;
       `}
   }
-
-  > div {
-    height: 16px;
-    margin-left: 8px;
-  }
 `;
 
 export const Content = styled.label`

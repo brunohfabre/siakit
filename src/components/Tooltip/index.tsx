@@ -2,10 +2,10 @@ import React from 'react';
 import Tippy, { TippyProps } from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 
-const Tooltip: React.FC<TippyProps> = ({ children, ...rest }) => {
+const Tooltip: React.FC<TippyProps> = ({ children, className, ...rest }) => {
   return (
     <Tippy {...rest}>
-      <div>{children}</div>
+      <div className={className}>{children}</div>
     </Tippy>
   );
 };

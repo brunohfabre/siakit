@@ -2,29 +2,28 @@ import React, { useEffect, useRef, InputHTMLAttributes } from 'react';
 import { useField } from '@unform/core';
 import { FiAlertCircle } from 'react-icons/fi';
 
-import Tooltip from '../../Tooltip';
-
+import { Error } from '../styles';
 import { Container } from './styles';
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
+  label?: string;
   options: {
-    id: string;
     value: string;
     label: string;
   }[];
 }
 
-const Radio: React.FC<Props> = ({ name, options, ...rest }) => {
+const Radio: React.FC<Props> = ({ name, label, options, ...rest }) => {
   const inputRefs = useRef<HTMLInputElement[]>([]);
-  const { fieldName, registerField, defaultValue = [], error } = useField(name);
+  const { fieldName, registerField, defaultValue, error } = useField(name);
 
   useEffect(() => {
     registerField({
       name: fieldName,
       ref: inputRefs.current,
-      getValue: (refs: HTMLInputElement[]) => {
-        return refs.filter((ref) => ref.checked).map((ref) => ref.value);
+      getValue: (refs) => {
+        return refs.filter((ref: HTMLInputElement) => ref.checked)[0]?.value;
       },
       clearValue: (refs: HTMLInputElement[]) => {
         refs.forEach((ref) => {
@@ -43,29 +42,33 @@ const Radio: React.FC<Props> = ({ name, options, ...rest }) => {
 
   return (
     <Container isErrored={!!error}>
-      {options.map((option, index) => (
-        <label htmlFor={option.id} key={option.id}>
-          <input
-            defaultChecked={defaultValue.find((dv: string) => dv === option.id)}
-            ref={(ref) => {
-              inputRefs.current[index] = ref as HTMLInputElement;
-            }}
-            value={option.value}
-            type="radio"
-            id={option.id}
-            name={name}
-            {...rest}
-          />
+      {label && <label htmlFor={fieldName}>{label}</label>}
 
-          {option.label}
-        </label>
-      ))}
+      <div>
+        {options.map((option, index) => (
+          <label htmlFor={option.value} key={option.value}>
+            <input
+              defaultChecked={defaultValue === option.value}
+              ref={(ref) => {
+                inputRefs.current[index] = ref as HTMLInputElement;
+              }}
+              value={option.value}
+              type="radio"
+              id={option.value}
+              name={name}
+              {...rest}
+            />
 
-      {error && (
-        <Tooltip content={error}>
-          <FiAlertCircle color="#dc3545" size={16} />
-        </Tooltip>
-      )}
+            {option.label}
+          </label>
+        ))}
+
+        {error && (
+          <Error content={error}>
+            <FiAlertCircle color="#dc3545" size={16} />
+          </Error>
+        )}
+      </div>
     </Container>
   );
 };

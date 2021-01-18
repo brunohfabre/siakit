@@ -1,21 +1,42 @@
 import styled, { css } from 'styled-components';
+import { shade } from 'polished';
 
 import Card from '../../Card';
 
-export const List = styled(Card)`
+export const Options = styled(Card)`
   min-width: 200px;
-  max-height: 140px;
-  overflow-y: auto;
+  max-height: 360px;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   padding: 8px 0;
+`;
 
-  div {
-    &:hover {
-      cursor: pointer;
-      background: blue !important;
-    }
+interface OptionProps {
+  isSelected: boolean;
+}
+
+export const Option = styled.div<OptionProps>`
+  font-size: 14px;
+  padding: 10px 16px;
+  cursor: pointer;
+  color: #24292e;
+  background: #fff;
+
+  &:hover {
+    background: ${shade(0.05, '#fff')};
   }
+
+  ${(props) =>
+    props.isSelected &&
+    css`
+      background: #237bc3;
+      color: #fff;
+
+      &:hover {
+        background: ${shade(0.05, '#237bc3')};
+      }
+    `}
 `;
 
 export const TextSelected = styled.div`
@@ -23,30 +44,10 @@ export const TextSelected = styled.div`
   left: 12px;
 `;
 
-interface ContainerProps {
-  isErrored: boolean;
-}
-
 interface InputContainerProps {
   isFocused: boolean;
   isErrored: boolean;
 }
-
-export const Container = styled.div<ContainerProps>`
-  display: flex;
-  flex-direction: column;
-
-  label {
-    margin-bottom: 4px;
-    color: #24292e;
-
-    ${(props) =>
-      props.isErrored &&
-      css`
-        color: #dc3545;
-      `}
-  }
-`;
 
 export const InputContainer = styled.div<InputContainerProps>`
   position: relative;
@@ -83,39 +84,17 @@ export const InputContainer = styled.div<InputContainerProps>`
     background: transparent;
     margin-left: 4px;
     z-index: 5;
+    cursor: pointer;
 
     &::placeholder {
       color: rgba(0, 0, 0, 0.16);
     }
   }
-
-  > div:last-child {
-    display: flex;
-    margin-left: 8px;
-
-    svg {
-      color: #dc3545;
-    }
-  }
 `;
 
-export const Remove = styled.button`
+export const SelectFocusInfo = styled.button`
+  background: transparent;
   border: 0;
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
-  width: 20px;
   height: 20px;
-  margin-left: 8px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.1);
-  }
-
-  svg {
-    color: rgba(0, 0, 0, 0.32);
-  }
+  margin-left: 4px;
 `;

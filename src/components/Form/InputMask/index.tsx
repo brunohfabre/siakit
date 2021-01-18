@@ -7,13 +7,14 @@ import React, {
 } from 'react';
 import { useField } from '@unform/core';
 import { toPattern } from 'vanilla-masker';
-import { FiX, FiAlertCircle } from 'react-icons/fi';
-
-import Tooltip from '../../Tooltip';
+import { FiAlertCircle } from 'react-icons/fi';
 
 import masks from '../../../utils/masks';
 
-import { Container, InputContainer, Remove } from './styles';
+import Remove from '../components/Remove';
+
+import { Container, Error } from '../styles';
+import { InputContainer } from './styles';
 
 type Mask = keyof typeof masks;
 
@@ -21,15 +22,24 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   mask: Mask;
   label?: string;
+  width?: string;
 }
 
-const InputMask: React.FC<Props> = ({ name, mask, label, ...rest }) => {
+const InputMask: React.FC<Props> = ({
+  name,
+  mask,
+  label,
+  width = 'initial',
+  ...rest
+}) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [isFocused, setIsFocused] = useState(false);
-  const [isFilled, setIsFilled] = useState('');
-
   const { fieldName, defaultValue, registerField, error } = useField(name);
+
+  const [isFocused, setIsFocused] = useState(false);
+  const [isFilled, setIsFilled] = useState(
+    toPattern(defaultValue, masks[mask]),
+  );
 
   const masked = useCallback(
     (data) => {
@@ -51,6 +61,10 @@ const InputMask: React.FC<Props> = ({ name, mask, label, ...rest }) => {
         setIsFilled(String(value));
         masked(value);
       },
+      clearValue: (ref) => {
+        ref.value = '';
+        setIsFilled('');
+      },
     });
   }, [fieldName, registerField, masked]);
 
@@ -62,7 +76,7 @@ const InputMask: React.FC<Props> = ({ name, mask, label, ...rest }) => {
   }, []);
 
   return (
-    <Container isErrored={!!error}>
+    <Container isErrored={!!error} width={width}>
       {label && <label htmlFor={fieldName}>{label}</label>}
 
       <InputContainer isFocused={isFocused} isErrored={!!error}>
@@ -71,7 +85,7 @@ const InputMask: React.FC<Props> = ({ name, mask, label, ...rest }) => {
           onBlur={() => setIsFocused(false)}
           id={fieldName}
           ref={inputRef}
-          defaultValue={defaultValue}
+          defaultValue={toPattern(defaultValue, masks[mask])}
           onChange={(e) => {
             masked(e.target.value);
             setIsFilled(e.target.value);
@@ -79,16 +93,12 @@ const InputMask: React.FC<Props> = ({ name, mask, label, ...rest }) => {
           {...rest}
         />
 
-        {isFilled && (
-          <Remove type="button" onClick={handleClearInput}>
-            <FiX size={16} />
-          </Remove>
-        )}
+        {isFilled && <Remove onClick={handleClearInput} />}
 
         {error && (
-          <Tooltip content={error}>
+          <Error content={error}>
             <FiAlertCircle color="#dc3545" size={16} />
-          </Tooltip>
+          </Error>
         )}
       </InputContainer>
     </Container>

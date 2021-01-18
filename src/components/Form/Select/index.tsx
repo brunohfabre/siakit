@@ -9,36 +9,40 @@ import React, {
 import Tippy from '@tippyjs/react/headless';
 import debounce from 'lodash.debounce';
 import { useField } from '@unform/core';
-import { FiX, FiAlertCircle } from 'react-icons/fi';
+import { FiAlertCircle, FiChevronDown } from 'react-icons/fi';
 
-import Tooltip from '../../Tooltip';
 import Spin from '../../Spin';
 
+import Remove from '../components/Remove';
+
+import { Container, Error } from '../styles';
 import {
-  List,
+  Options,
+  Option,
   TextSelected,
-  Container,
   InputContainer,
-  Remove,
+  SelectFocusInfo,
 } from './styles';
 
 interface Option {
-  id: string;
+  value: string;
   label: string;
 }
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   label?: string;
+  width?: string;
   options: Option[];
   onSearch?(value: string): void;
-  loading: boolean;
+  loading?: boolean;
   next?(): void;
 }
 
 const Select: React.FC<Props> = ({
   name,
   label,
+  width = 'initial',
   options,
   onChange,
   onSearch,
@@ -46,6 +50,7 @@ const Select: React.FC<Props> = ({
   next,
   placeholder,
 }) => {
+  const initialRef = useRef(true);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [isFocused, setIsFocused] = useState(false);
@@ -59,20 +64,10 @@ const Select: React.FC<Props> = ({
 
   const { fieldName, defaultValue, registerField, error } = useField(name);
 
-  useEffect(() => {
-    if (options) {
-      if (valueToSet) {
-        setData([valueToSet, ...options]);
-      } else {
-        setData(options);
-      }
-    }
-  }, [options]);
-
   const handleSelectOption = useCallback(
     (option) => {
       setIsFocused(false);
-      setIsFilled(option.id);
+      setIsFilled(option.value);
       setSelected(option);
 
       setValueToSet(null);
@@ -88,6 +83,44 @@ const Select: React.FC<Props> = ({
     },
     [onChange],
   );
+
+  useEffect(() => {
+    if (options) {
+      if (valueToSet) {
+        setData([valueToSet, ...options]);
+      } else {
+        setData(options);
+      }
+    }
+  }, [options, valueToSet]);
+
+  useEffect(() => {
+    if (initialRef.current) {
+      if (defaultValue) {
+        if (typeof defaultValue === 'object') {
+          handleSelectOption(defaultValue);
+
+          const findOption = data.find(
+            (item) => item.value === defaultValue.value,
+          );
+
+          if (!findOption) {
+            setValueToSet(defaultValue);
+
+            setData((state) => [defaultValue, ...state]);
+          }
+        } else {
+          const findOption = data.find((item) => item.value === defaultValue);
+
+          if (findOption) {
+            handleSelectOption(findOption);
+          }
+        }
+      }
+
+      initialRef.current = false;
+    }
+  }, [defaultValue, data, handleSelectOption]);
 
   useEffect(() => {
     registerField({
@@ -107,7 +140,9 @@ const Select: React.FC<Props> = ({
           if (typeof inputValue === 'object') {
             handleSelectOption(inputValue);
 
-            const findOption = data.find((item) => item.id === inputValue.id);
+            const findOption = data.find(
+              (item) => item.value === inputValue.value,
+            );
 
             if (!findOption) {
               setValueToSet(inputValue);
@@ -115,7 +150,7 @@ const Select: React.FC<Props> = ({
               setData((state) => [inputValue, ...state]);
             }
           } else {
-            const findOption = data.find((item) => item.id === inputValue);
+            const findOption = data.find((item) => item.value === inputValue);
 
             if (findOption) {
               handleSelectOption(findOption);
@@ -212,24 +247,24 @@ const Select: React.FC<Props> = ({
       onClickOutside={handleClickOutside}
       render={() => (
         <Spin padding={16} spinning={loading}>
-          <List onScroll={handleScroll}>
+          <Options onScroll={handleScroll}>
             {data.map((option) => (
-              <div
-                key={option.id}
+              <Option
+                key={option.value}
                 onClick={() => handleSelectOption(option)}
                 role="button"
                 tabIndex={0}
                 onKeyPress={undefined}
-                // isSelected={selected?.id === option.id}
+                isSelected={selected?.value === option.value}
               >
                 {option.label}
-              </div>
+              </Option>
             ))}
-          </List>
+          </Options>
         </Spin>
       )}
     >
-      <Container isErrored={!!error}>
+      <Container isErrored={!!error} width={width}>
         {label && <label htmlFor={fieldName}>{label}</label>}
 
         <InputContainer isFocused={isFocused} isErrored={!!error}>
@@ -237,24 +272,22 @@ const Select: React.FC<Props> = ({
 
           <input
             ref={inputRef}
-            onFocus={() => {
-              setIsFocused(true);
-            }}
+            onFocus={() => setIsFocused(true)}
             type="text"
             onChange={handleInputChange}
             placeholder={selected || isFilled ? '' : placeholder}
           />
-          {(selected || isFilled) && (
-            <Remove type="button" onClick={handleClearInput}>
-              <FiX size={16} />
-            </Remove>
-          )}
+          {(selected || isFilled) && <Remove onClick={handleClearInput} />}
 
           {error && (
-            <Tooltip content={error}>
+            <Error content={error}>
               <FiAlertCircle color="#dc3545" size={16} />
-            </Tooltip>
+            </Error>
           )}
+
+          <SelectFocusInfo onClick={() => setIsFocused(true)} type="button">
+            <FiChevronDown size={20} color="#666" />
+          </SelectFocusInfo>
         </InputContainer>
       </Container>
     </Tippy>

@@ -1,22 +1,21 @@
 import styled, { css } from 'styled-components';
 
-interface InputContainerProps {
+interface TextAreaContainerProps {
   isFocused: boolean;
   isErrored: boolean;
 }
 
-export const InputContainer = styled.div<InputContainerProps>`
+export const TextAreaContainer = styled.div<TextAreaContainerProps>`
   background: #fff;
-  height: 32px;
-  padding: 0 8px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding-left: 8px;
   border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   transition: border 0.2s;
   transition: border-color 0.2s;
   transition: background-color 0.2s;
+  position: relative;
 
   display: flex;
-  align-items: center;
 
   ${(props) =>
     props.isErrored &&
@@ -32,15 +31,28 @@ export const InputContainer = styled.div<InputContainerProps>`
       background: #fff;
     `}
 
-  input {
+  textarea {
     flex: 1;
     border: 0;
     color: #24292e;
     background: transparent;
     margin-left: 4px;
+    resize: vertical;
+    min-height: 32px;
+    padding: 6px 0;
+    padding-right: 56px;
 
     &::placeholder {
       color: rgba(0, 0, 0, 0.16);
     }
+  }
+
+  span {
+    position: absolute;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    margin-top: 6px;
+    height: 20px;
   }
 `;

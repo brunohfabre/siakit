@@ -1,29 +1,9 @@
 import styled, { css } from 'styled-components';
 
-interface ContainerProps {
-  isErrored: boolean;
-}
-
 interface InputContainerProps {
   isFocused: boolean;
   isErrored: boolean;
 }
-
-export const Container = styled.div<ContainerProps>`
-  display: flex;
-  flex-direction: column;
-
-  label {
-    margin-bottom: 4px;
-    color: #24292e;
-
-    ${(props) =>
-      props.isErrored &&
-      css`
-        color: #dc3545;
-      `}
-  }
-`;
 
 export const InputContainer = styled.div<InputContainerProps>`
   background: #fff;
@@ -62,35 +42,5 @@ export const InputContainer = styled.div<InputContainerProps>`
     &::placeholder {
       color: rgba(0, 0, 0, 0.16);
     }
-  }
-
-  > div {
-    display: flex;
-    margin-left: 8px;
-
-    svg {
-      color: #dc3545;
-    }
-  }
-`;
-
-export const Remove = styled.button`
-  border: 0;
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
-  width: 20px;
-  height: 20px;
-  margin-left: 8px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.1);
-  }
-
-  svg {
-    color: rgba(0, 0, 0, 0.32);
   }
 `;

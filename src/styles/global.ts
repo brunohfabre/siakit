@@ -15,10 +15,25 @@ export default createGlobalStyle`
   html, body, #root {
     height: 100vh;
     display: flex;
+    flex: 1;
   }
 
-  #root {
-    padding: 16px;
+  form {
+    section {
+      display: flex;
+
+      & + section {
+        margin-top: 8px;
+      }
+
+      > div {
+        flex: 1;
+
+        & + div {
+          margin-left: 8px;
+        }
+      }
+    }
   }
 
   body, input, textarea, button {

@@ -2,8 +2,7 @@ import React, { useEffect, InputHTMLAttributes, useState } from 'react';
 import { useField } from '@unform/core';
 import { FiAlertCircle } from 'react-icons/fi';
 
-import Tooltip from '../../Tooltip';
-
+import { Error } from '../styles';
 import { Container, Content } from './styles';
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
@@ -52,9 +51,9 @@ const Switch: React.FC<Props> = ({ name, label, ...rest }) => {
       </label>
 
       {error && (
-        <Tooltip content={error}>
+        <Error content={error}>
           <FiAlertCircle color="#dc3545" size={16} />
-        </Tooltip>
+        </Error>
       )}
     </Container>
   );

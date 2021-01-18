@@ -3,16 +3,16 @@ import { useField } from '@unform/core';
 import { CirclePicker } from 'react-color';
 import { FiAlertCircle } from 'react-icons/fi';
 
-import Tooltip from '../../Tooltip';
-
+import { Error } from '../styles';
 import { Container, PickerContainer } from './styles';
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   label?: string;
+  width?: string;
 }
 
-const Input: React.FC<Props> = ({ name, label }) => {
+const Input: React.FC<Props> = ({ name, label, width = 'initial' }) => {
   const { fieldName, defaultValue, registerField, error } = useField(name);
 
   const [color, setColor] = useState(defaultValue);
@@ -27,16 +27,16 @@ const Input: React.FC<Props> = ({ name, label }) => {
   }, [fieldName, registerField, color]);
 
   return (
-    <Container isErrored={!!error}>
+    <Container isErrored={!!error} width={width}>
       {label && <label htmlFor={fieldName}>{label}</label>}
 
       <PickerContainer>
         <CirclePicker onChange={(value) => setColor(value.hex)} color={color} />
 
         {error && (
-          <Tooltip content={error}>
+          <Error content={error}>
             <FiAlertCircle color="#dc3545" size={16} />
-          </Tooltip>
+          </Error>
         )}
       </PickerContainer>
     </Container>

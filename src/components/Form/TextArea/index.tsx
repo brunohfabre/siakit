@@ -1,7 +1,7 @@
 import React, {
   useEffect,
   useRef,
-  InputHTMLAttributes,
+  TextareaHTMLAttributes,
   useState,
   useCallback,
 } from 'react';
@@ -11,21 +11,23 @@ import { FiAlertCircle } from 'react-icons/fi';
 import Remove from '../components/Remove';
 
 import { Container, Error } from '../styles';
-import { InputContainer } from './styles';
+import { TextAreaContainer } from './styles';
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+interface Props extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   name: string;
   label?: string;
   width?: string;
+  rows?: number;
 }
 
-const Input: React.FC<Props> = ({
+const TextArea: React.FC<Props> = ({
   name,
   label,
   width = 'initial',
+  rows = 3,
   ...rest
 }) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const { fieldName, defaultValue, registerField, error } = useField(name);
 
@@ -44,7 +46,7 @@ const Input: React.FC<Props> = ({
     });
   }, [fieldName, registerField]);
 
-  const handleClearInput = useCallback(() => {
+  const handleClearTextArea = useCallback(() => {
     if (inputRef.current) {
       inputRef.current.value = '';
       setIsFilled('');
@@ -55,27 +57,30 @@ const Input: React.FC<Props> = ({
     <Container isErrored={!!error} width={width}>
       {label && <label htmlFor={fieldName}>{label}</label>}
 
-      <InputContainer isFocused={isFocused} isErrored={!!error}>
-        <input
+      <TextAreaContainer isFocused={isFocused} isErrored={!!error}>
+        <textarea
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           id={fieldName}
           ref={inputRef}
           defaultValue={defaultValue}
           onChange={(e) => setIsFilled(e.target.value)}
+          rows={rows}
           {...rest}
         />
 
-        {isFilled && <Remove onClick={handleClearInput} />}
+        <span>
+          {isFilled && <Remove onClick={handleClearTextArea} />}
 
-        {error && (
-          <Error content={error}>
-            <FiAlertCircle color="#dc3545" size={16} />
-          </Error>
-        )}
-      </InputContainer>
+          {error && (
+            <Error content={error}>
+              <FiAlertCircle color="#dc3545" size={16} />
+            </Error>
+          )}
+        </span>
+      </TextAreaContainer>
     </Container>
   );
 };
 
-export default Input;
+export default TextArea;
