@@ -1,6 +1,25 @@
 import styled, { css } from 'styled-components';
+import { Form as Unform } from '@unform/web';
 
 import Tooltip from '../Tooltip';
+
+export const Form = styled(Unform)`
+  section {
+    display: flex;
+
+    & + section {
+      margin-top: 8px;
+    }
+
+    > div {
+      flex: 1;
+
+      & + div {
+        margin-left: 8px;
+      }
+    }
+  }
+`;
 
 interface ContainerProps {
   isErrored: boolean;

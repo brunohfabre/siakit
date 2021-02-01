@@ -69,6 +69,7 @@ const Select: React.FC<Props> = ({
       setIsFocused(false);
       setIsFilled(option.value);
       setSelected(option);
+      setData(options);
 
       setValueToSet(null);
 
@@ -81,7 +82,7 @@ const Select: React.FC<Props> = ({
         setValue('');
       }
     },
-    [onChange],
+    [onChange, options],
   );
 
   useEffect(() => {

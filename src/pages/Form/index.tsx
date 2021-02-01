@@ -138,8 +138,19 @@ const FormPage: React.FC = () => {
       <section>
         <h3>input</h3>
 
-        <Input name="name" label="Nome completo" placeholder="Nome completo" />
-        <Input name="age" label="Idade" placeholder="Idade" type="number" />
+        <Input
+          name="name"
+          label="Nome completo"
+          placeholder="Nome completo"
+          disabled
+        />
+        <Input
+          name="age"
+          label="Idade"
+          placeholder="Idade"
+          type="number"
+          disabled
+        />
       </section>
 
       <section>

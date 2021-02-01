@@ -18,24 +18,6 @@ export default createGlobalStyle`
     flex: 1;
   }
 
-  form {
-    section {
-      display: flex;
-
-      & + section {
-        margin-top: 8px;
-      }
-
-      > div {
-        flex: 1;
-
-        & + div {
-          margin-left: 8px;
-        }
-      }
-    }
-  }
-
   body, input, textarea, button {
     /* font-family: 'Inter', sans-serif; */
     font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
